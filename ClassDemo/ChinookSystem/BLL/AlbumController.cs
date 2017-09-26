@@ -31,5 +31,21 @@ namespace ChinookSystem.BLL
                 return results.ToList(); //Test results.Dump(); in LinqPad
             }
         }
+        //Add new method for album entity
+        [DataObjectMethod(DataObjectMethodType.Select,false)]
+        public List<Album> Albums_ListByReleaseYear(int minyear,int maxyear)
+        {
+            using (var context = new ChinookContext())
+            {
+                var results =
+                from x in context.Albums
+                where x.ReleaseYear >= minyear && x.ReleaseYear <= maxyear
+                orderby x.ReleaseYear, x.Title
+                select x;
+
+                return results.ToList();
+            }
+
+        }
     }
 }
