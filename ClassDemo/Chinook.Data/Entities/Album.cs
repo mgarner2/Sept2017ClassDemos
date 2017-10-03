@@ -25,7 +25,8 @@ namespace Chinook.Data.Entities
 
         //Navigation properties
         //Album (Child) to Artist (Parent) - Singular Relationship
-        public virtual  Artist  Artist { get; set; }
+        public virtual Artist Artist { get; set; }
+        public virtual ICollection<Track> Tracks { get; set; }
 
     }
 }

@@ -33,6 +33,13 @@ namespace Chinook.Data.Entities
         [Column(TypeName = "numeric")]
         public decimal UnitPrice { get; set; }
 
-    
+        //Parent navigational properties
+        public virtual Album Album { get; set; }
+        public virtual Genre Genre { get; set; }
+        public virtual MediaType MediaType { get; set; }
+
+        //Children navigational properties
+        public virtual ICollection<InvoiceLine> InvoiceLines { get; set; }
+        public virtual ICollection<PlaylistTrack> PlaylistTracks { get; set; }
     }
 }
