@@ -27,6 +27,7 @@ namespace Chinook.Data.Entities
         //Album (Child) to Artist (Parent) - Singular Relationship
         public virtual Artist Artist { get; set; }
         public virtual ICollection<Track> Tracks { get; set; }
-
+        //CRUD -- These are not attributes! Configuring the ListView automatically will include these navigational properties.
+        //Could use "not mapped properties" before you begin so they aren't picked up by the ListView configurator.
     }
 }
