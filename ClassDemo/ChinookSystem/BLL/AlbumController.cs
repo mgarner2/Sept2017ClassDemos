@@ -81,7 +81,7 @@ namespace ChinookSystem.BLL
         [DataObjectMethod(DataObjectMethodType.Insert, false)]
         public int Albums_Add(Album item) //What is being passed in is an instance of your entity
         {
-            using (var context = new ChinookContext()) 
+            using (var context = new ChinookContext())
             {
                 item = context.Albums.Add(item);//.Add just stages the record to be commited to SQL table
                 context.SaveChanges();//.SaveChanges commits the request
@@ -97,7 +97,7 @@ namespace ChinookSystem.BLL
                 return context.SaveChanges();
             }
         }
-        
+
         public int Albums_Delete(int albumid) //Don't need to pass in the entity - just the primary key
         {
             using (var context = new ChinookContext())
@@ -110,10 +110,25 @@ namespace ChinookSystem.BLL
 
             }
         }
-        [DataObjectMethod(DataObjectMethodType.Delete,false)]
+        [DataObjectMethod(DataObjectMethodType.Delete, false)]
         public int Albums_Delete(Album item)
         {
             return Albums_Delete(item.AlbumId);
+        }
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
+        public List<SelectionList> List_AlbumTitles()
+        {
+            using (var context = new ChinookContext())
+            {
+                var results = from x in context.Albums
+                              orderby x.Title
+                              select new SelectionList
+                              {
+                                  IDValueField = x.AlbumId,
+                                  DisplayText = x.Title
+                              };
+                return results.ToList();
+            }
         }
     }
 }

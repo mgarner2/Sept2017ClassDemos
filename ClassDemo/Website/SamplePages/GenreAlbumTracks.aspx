@@ -12,7 +12,7 @@
         Outer Repeater will display the first fields from the DTO Class which do not repeat (fields that are not inside a collection)
         Nested Repeator will display the collection of the previous Repeator
         Nested repeator will get its datasource form the collection of the ***PREVIOUS DTO LEVEL*** (Either POCO or another DTO)-->
-    <asp:Repeater ID="rptGenreAlbumTrackList" runat="server" DataSourceID="odsGenreAlbumTrackList"  ItemType="Chinook.Data.DTOs.GenreDTO">
+    <asp:Repeater ID="rptGenreAlbumTrackList" runat="server" DataSourceID="odsGenreAlbumTrackList"  ItemType="Chinook.Data.DTOs.GenreDTO" >
         <ItemTemplate>
             <h2> Genre: <%#Eval("genre") %></h2>
             <asp:Repeater ID="rptAlbumTrackList" runat="server" DataSource='<%# Eval("albums") %>' ItemType="Chinook.Data.DTOs.AlbumDTO">
