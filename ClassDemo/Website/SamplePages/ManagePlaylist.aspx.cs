@@ -48,26 +48,61 @@ public partial class SamplePages_ManagePlaylist : System.Web.UI.Page
     protected void ArtistFetch_Click(object sender, EventArgs e)
     {
         //code to go here
+        TracksBy.Text = "Artist";
+        SearchArgID.Text = ArtistDDL.SelectedValue;
+        //Refresh the track list display
+        TracksSelectionList.DataBind();
     }
 
     protected void MediaTypeFetch_Click(object sender, EventArgs e)
     {
         //code to go here
+        TracksBy.Text = "MediaType";
+        SearchArgID.Text = MediaTypeDDL.SelectedValue;
+        TracksSelectionList.DataBind();
     }
 
     protected void GenreFetch_Click(object sender, EventArgs e)
     {
         //code to go here
+        TracksBy.Text = "Genre";
+        SearchArgID.Text = GenreDDL.SelectedValue;
+        TracksSelectionList.DataBind();
     }
 
     protected void AlbumFetch_Click(object sender, EventArgs e)
     {
         //code to go here
+        TracksBy.Text = "Album";
+        SearchArgID.Text = AlbumDDL.SelectedValue;
+        TracksSelectionList.DataBind();
     }
 
     protected void PlayListFetch_Click(object sender, EventArgs e)
     {
         //code to go here
+        //standard query lookup
+        if (string.IsNullOrEmpty(PlaylistName.Text))
+        {
+            //display a message to the user via the user control we created: MessageUserControl
+            MessageUserControl.ShowInfo("Warning", "Please enter a playlist name.");
+        }
+        else
+        {
+            //Obtain the username from the security Identity class
+            string username = User.Identity.Name;
+
+            //The MessageUserControl has the try/catch logic embedded in it - you don't need to code your own
+            MessageUserControl.TryRun(() =>
+            {
+                //code to be run under the "watchful eyes" of the user control
+                //this is the try(yourcode) of the try/catch
+                PlaylistTracksController sysmgr = new PlaylistTracksController();
+                List<UserPlaylistTrack> info = sysmgr.List_TracksForPlaylist(PlaylistName.Text, username);
+                PlayList.DataSource = info;
+                PlayList.DataBind();
+            },"","Current Playlist:");
+        }
     }
 
     protected void TracksSelectionList_ItemCommand(object sender, 
