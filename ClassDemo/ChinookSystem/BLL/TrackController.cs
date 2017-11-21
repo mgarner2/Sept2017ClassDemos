@@ -106,6 +106,21 @@ namespace ChinookSystem.BLL
                         }
                     default:
                         {
+                            results = from x in context.Tracks
+                                      orderby x.Name
+                                      where x.Genre.GenreId == argid
+                                      select new TrackList
+                                      {
+                                          TrackID = x.TrackId,
+                                          Name = x.Name,
+                                          Title = x.Album.Title,
+                                          MediaName = x.MediaType.Name,
+                                          GenreName = x.Genre.Name,
+                                          Composer = x.Composer,
+                                          Milliseconds = x.Milliseconds,
+                                          Bytes = x.Bytes,
+                                          UnitPrice = x.UnitPrice
+                                      };
                             break;
                         }
                 }

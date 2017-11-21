@@ -109,20 +109,169 @@ public partial class SamplePages_ManagePlaylist : System.Web.UI.Page
         ListViewCommandEventArgs e)
     {
         //code to go here
+        if (string.IsNullOrEmpty(PlaylistName.Text))
+        {
+            //display a message to the user via the user control we created: MessageUserControl
+            MessageUserControl.ShowInfo("Warning", "Please enter a playlist name.");
+        }
+        else
+        {
+            string username = User.Identity.Name;
+            //Where does TrackId come from?
+            //ListViewCommandEventArgs e contains the parameter values for this event - which includes CommandArgument
+            //CommandArgument is an object
+            //int trackID = (int)e.CommandArgument;
+            int trackid = int.Parse(e.CommandArgument.ToString());
+
+            //Send your collection of parameter values to the BLL for processing
+            MessageUserControl.TryRun(() =>
+            {
+                //the process
+                PlaylistTracksController sysmgr = new PlaylistTracksController();
+                List<UserPlaylistTrack> refreshResults = sysmgr.Add_TrackToPlaylist(PlaylistName.Text, username, trackid);
+                PlayList.DataSource = refreshResults;
+                PlayList.DataBind();
+
+            },"Success","Your track has been added to your playlist.");
+        }
     }
 
     protected void MoveUp_Click(object sender, EventArgs e)
     {
         //code to go here
+        if (PlayList.Rows.Count == 0)
+        {
+            MessageUserControl.ShowInfo("Warning", "No playlist tracks received.");
+        }
+        else
+        {
+            if(string.IsNullOrEmpty(PlaylistName.Text))
+            {
+                MessageUserControl.ShowInfo("Warning", "No playlist name has been retrieved.");
+            }
+            else
+            {
+                //check only one row has been selected
+                int trackid = 0;
+                int tracknumber = 0;
+                int rowsSelected = 0;
+                CheckBox playlistselection = null;
+                //traverse through the gridview looking for a checked box in each row
+                for (int i = 0; i <PlayList.Rows.Count; i++)
+                {
+                    //PlaylistSelection will point to the current Checkbox of the current gridview row being eamined
+                    playlistselection = PlayList.Rows[i].FindControl("Selected") as CheckBox;
+                    if (playlistselection.Checked)
+                    {
+                        trackid = int.Parse((PlayList.Rows[i].FindControl("TrackId") as Label).Text);
+                        tracknumber = int.Parse((PlayList.Rows[i].FindControl("TrackNumber") as Label).Text);
+                        rowsSelected++;
+                        
+                        
+                    }
+                }//eo for
+                //Check many tracks were selected
+                if (rowsSelected != 1)
+                {
+                    MessageUserControl.ShowInfo("Warning", "Can only move one track at a time");
+                }
+                else
+                {
+                    //Check position of the track
+                    if (tracknumber == 1)
+                    {
+                        MessageUserControl.ShowInfo("Information", "Track is already at the top of the list");
+                    }
+                    else
+                    {
+                        MoveTrack(trackid, tracknumber, "up");
+                    }
+
+                }
+
+            }
+
+        }
     }
 
     protected void MoveDown_Click(object sender, EventArgs e)
     {
         //code to go here
+         if (PlayList.Rows.Count == 0)
+        {
+            MessageUserControl.ShowInfo("Warning", "No playlist tracks received.");
+        }
+        else
+        {
+            if(string.IsNullOrEmpty(PlaylistName.Text))
+            {
+                MessageUserControl.ShowInfo("Warning", "No playlist name has been retrieved.");
+            }
+            else
+            {
+                //check only one row has been selected
+                int trackid = 0;
+                int tracknumber = 0;
+                int rowsSelected = 0;
+                CheckBox playlistselection = null;
+                //traverse through the gridview looking for a checked box in each row
+                for (int i = 0; i <PlayList.Rows.Count; i++)
+                {
+                    //PlaylistSelection will point to the current Checkbox of the current gridview row being eamined
+                    playlistselection = PlayList.Rows[i].FindControl("Selected") as CheckBox;
+                    if (playlistselection.Checked)
+                    {
+                        trackid = int.Parse((PlayList.Rows[i].FindControl("TrackId") as Label).Text);
+                        tracknumber = int.Parse((PlayList.Rows[i].FindControl("TrackNumber") as Label).Text);
+                        rowsSelected++;
+                        
+                        
+                    }
+                }//eo for
+                //Check many tracks were selected
+                if (rowsSelected != 1)
+                {
+                    MessageUserControl.ShowInfo("Warning", "Can only move one track at a time");
+                }
+                else
+                {
+                    //Check position of the track
+                    if (tracknumber == PlayList.Rows.Count)
+                    {
+                        MessageUserControl.ShowInfo("Information", "Track is already at the bottom of the list");
+                    }
+                    else
+                    {
+                        MoveTrack(trackid, tracknumber, "down");
+                    }
+
+                }
+
+            }
+
+        }
     }
     protected void MoveTrack(int trackid, int tracknumber, string direction)
     {
         //code to go here
+        //wrap up your work under MessageUserControl
+        MessageUserControl.TryRun(() =>
+        {
+            //TryRun(() => {} ); -- Constructing a process
+
+            //Call the appropriate BLL method (Update)
+            PlaylistTracksController sysmgr = new PlaylistTracksController();
+            sysmgr.MoveTrack(User.Identity.Name, PlaylistName.Text, trackid, tracknumber, direction);
+
+            //Refresh the display
+            List<UserPlaylistTrack> results = sysmgr.List_TracksForPlaylist(PlaylistName.Text, User.Identity.Name);
+            PlayList.DataSource = results;
+            PlayList.DataBind(); 
+        }, "Success","Track has been moved.");
+
+
+
+
     }
     protected void DeleteTrack_Click(object sender, EventArgs e)
     {
