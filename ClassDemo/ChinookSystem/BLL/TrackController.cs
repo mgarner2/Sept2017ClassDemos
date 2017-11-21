@@ -130,8 +130,29 @@ namespace ChinookSystem.BLL
                 //          };
                 return results.ToList();//You can also use List<T>, and you can just return results;
             }
-        }//eom
+        }
 
-       
+        [DataObjectMethod(DataObjectMethodType.Select, false)]
+        public List<GenreAlbumReport> GenreAlbumReport_Get()
+        {
+            using (var context = new ChinookContext())
+            {
+                var results = from x in context.Tracks
+                              select new GenreAlbumReport()
+                              {
+                                  GenreName = x.Genre.Name,
+                                  AlbumTitle = x.Album.Title,
+                                  TrackName = x.Name,
+                                  Milliseconds = x.Milliseconds,
+                                  Bytes = x.Bytes,
+                                  UnitPrice = x.UnitPrice
+                              };
+                return results.ToList();
+            }
+        }
+
+        //eom
+
+
     }//eoc
 }
